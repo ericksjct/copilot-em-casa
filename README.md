@@ -55,6 +55,35 @@ junto com `RULES.md` e o `STATE.md` do projeto.
 | Planner | Design fechado, decompor em passos executáveis | `PLAN.md` + um HANDOFF por passo |
 | Implementer | Executar **um** passo do plano | Código do arquivo |
 
+## Níveis do projeto e responsáveis
+
+Do mais amplo ao mais granular. Cada nível tem um dono único — a persona que gera e atualiza o artefato:
+
+```text
+Projeto  (context/PROJECT.md) .................. Bootstrapper
+└── Roadmap  (context/ROADMAP.md) .............. Bootstrapper
+    └── Fase N
+        ├── ADR  (adr/NNNN-*.md) ............... Architect    (decisão durável sobe pro PROJECT)
+        ├── Prototipagem  (handovers/*.md) ..... Prototyper   [opcional — valida o design]
+        └── Plano  (plans/fase-N-*.md) ......... Planner
+            └── Passos → código ................ Implementer
+
+Transversais (não pertencem a uma fase):
+   Mapa do código  (context/CODEBASE-MAP.md) ... Mapper
+   Estado vivo  (STATE.md) ..................... você, via blocos UPDATE das personas
+```
+
+| Nível | Artefato | Path | Responsável |
+| --- | --- | --- | --- |
+| Projeto | PROJECT.md | `docs/gsd/context/` | Bootstrapper |
+| Roadmap | ROADMAP.md | `docs/gsd/context/` | Bootstrapper |
+| Decisão | ADR | `docs/gsd/adr/` | Architect |
+| Validação | Relatório de prototipagem | `docs/gsd/handovers/` | Prototyper |
+| Plano | PLAN.md | `docs/gsd/plans/` | Planner |
+| Execução | Código | repo do projeto | Implementer |
+| Mapa | CODEBASE-MAP.md | `docs/gsd/context/` | Mapper |
+| Estado | STATE.md | `docs/gsd/` | você (via blocos UPDATE) |
+
 ## O fluxo ponta a ponta
 
 ```text
@@ -73,16 +102,9 @@ STATE.md atravessa tudo: Architect, Prototyper, Planner e Implementer devolvem
 um bloco "UPDATE STATE.md" ao final — você aplica no STATE.md do projeto.
 ```
 
-Quem mexe em cada artefato:
-
-- `PROJECT.md`, `ROADMAP.md` — só o **Bootstrapper**.
-- `CODEBASE-MAP.md` — só o **Mapper**.
-- `STATE.md` — você, aplicando os blocos UPDATE de Architect / Prototyper / Planner / Implementer.
-- `adr/`, `plans/`, `handovers/` — Architect, Planner e Prototyper geram; você salva.
-
 As personas trocam **handoffs** entre si (Architect→Planner, Planner→Implementer) e
-emitem **INPUT BOOTSTRAPPER** quando algo precisa entrar no PROJECT/ROADMAP. Os números
-de ADR e de fase são seus para atribuir.
+emitem **INPUT BOOTSTRAPPER** quando algo precisa entrar no PROJECT/ROADMAP. A numeração
+de ADR e fase sai da linha "Próximos números" do `STATE.md` — Architect e Planner a incrementam.
 
 ## Como montar um prompt
 
