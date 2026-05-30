@@ -6,15 +6,16 @@ blocos `<!-- INICIO: UPDATE STATE.md -->` ao final de cada resposta. Esses bloco
 os mesmos nomes de seção daqui + um verbo (atualizar / substituir / adicionar / remover):
 é só aplicar na seção correspondente. Nada de mapear nomes na cabeça.
 
-A linha "Próximos números" tira da sua cabeça o controle de numeração: Architect e
-Planner leem dela qual o próximo ADR / fase e a incrementam no bloco UPDATE.
+A linha "Próximos números" tira da sua cabeça o controle de numeração: o
+Productionizer lê dela qual o próximo número de Decisão / fase e a incrementa no
+bloco UPDATE.
 
 ## Estado
 
 - Projeto: [nome]
 - Fase atual: [N — nome] | Status: [em andamento | pausada | concluída]
 - Atualizado em: [YYYY-MM-DD]
-- Próximos números: ADR-0001 | Fase 1
+- Próximos números: D-001 | Fase 1
 
 ## Em progresso agora
 
@@ -34,4 +35,4 @@ Planner leem dela qual o próximo ADR / fase e a incrementam no bloco UPDATE.
 
 ## Decisões pendentes
 
-- [questão de design ainda em aberto — leva pro Architect]
+- [questão de design ainda em aberto — leva pro Prototyper, valida no notebook]

@@ -1,3 +1,6 @@
 .claude/
 copilot-em-casa.code-workspace
 .temp/
+__pycache__/
+*.pyc
+tests/fixtures/

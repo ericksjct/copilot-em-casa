@@ -1,8 +1,11 @@
 # PROJECT: [nome]
 
-Contexto estrutural do projeto. Muda pouco. Gerado e atualizado pela persona
-Bootstrapper. Cole no início da thread quando a persona precisar do contexto macro
-(Architect, Planner).
+Hub de contexto durável do projeto. Cresce por acréscimo: o miolo (Objetivo,
+Stack, Convenções) muda raramente; Roadmap e Decisões ganham linha nova conforme
+o projeto anda. Cole no início da thread junto com `RULES.md` e `STATE.md`.
+
+Gerado e atualizado pela persona Bootstrapper (Objetivo, Stack, Convenções,
+Roadmap) e pelo Productionizer (seção Decisões, via bloco UPDATE).
 
 ## Objetivo
 
@@ -26,9 +29,30 @@ Bootstrapper. Cole no início da thread quando a persona precisar do contexto ma
 - Configuração: [.env, config.yaml, etc.]
 - Testes: [pytest, smoke manual, etc.]
 
-## Decisões duráveis (ADRs aceitos)
+## Roadmap
 
-- [ADR-0001: título (`docs/gsd/adr/0001-titulo.md`) — preencher conforme surgem]
+Fases em ordem. Status: `[pendente]` | `[em andamento]` | `[concluída]` | `[descartada]`.
+
+### Fase 1: [nome] [pendente]
+
+- Objetivo: [1 frase]
+- Pronto quando: [critério verificável]
+- Plano: [`docs/gsd/plans/fase-1-nome.md` quando existir, senão "a planejar"]
+
+### Fase 2: [nome] [pendente]
+
+- Objetivo: [1 frase]
+- Pronto quando: [critério verificável]
+- Plano: [a planejar]
+
+## Decisões
+
+Log compacto. Uma entrada por decisão durável — a que vale além de uma fase, troca
+ou introduz dependência, ou fixa convenção que outras fases seguem. Provada no
+protótipo, não suposta. A numeração sai da linha "Próximos números" no `STATE.md`.
+Quem escreve aqui é o Productionizer (via bloco UPDATE).
+
+- D-001 ([YYYY-MM] · fase N): [decisão em 1-2 linhas]. Descartado: [alternativa refutada]. Consequência: [impacto no design ou nos passos].
 
 ## Fora de escopo
 

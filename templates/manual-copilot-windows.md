@@ -235,7 +235,7 @@ do conteúdo interno.
 
 ### 3.2 Delimitadores de artefato: comentários HTML
 
-Para conteúdo durável (HANDOFF, PLAN, ADR, arquivos de código completos),
+Para conteúdo durável (HANDOFF, PLAN, teste golden, arquivos de código completos),
 encapsule com comentários HTML:
 
 ```text
@@ -441,7 +441,7 @@ outra coisa.
 
 ### 6.3 Template de persona
 
-Para tarefas que se beneficiam de papel definido (Planner, Reviewer,
+Para tarefas que se beneficiam de papel definido (Prototyper, Productionize,
 Implementer, etc.). Cole junto com o STATE.md no primeiro turno.
 
 <!-- INICIO: template_persona -->
