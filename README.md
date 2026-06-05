@@ -19,10 +19,11 @@ você instala o toolkit nele (ver [Instalar num projeto](#instalar-num-projeto-d
 copilot-em-casa/
 ├── README.md                   este guia
 ├── personas/                   as 5 personas do fluxo (uma por papel)
-├── scripts/copiloto/           snapshot do código + empacotador de contexto (pack)
+├── scripts/copiloto/           snapshot, pack e aplicar (materializa a resposta da persona)
 └── templates/                  tudo que você copia pro projeto de trabalho
     ├── RULES.md                regras de formatação/comportamento — colar no início de toda thread
     ├── manual-copilot-windows.md   referência completa: o porquê de cada regra
+    ├── llm_output.md           buffer: cole a resposta da persona aqui e rode `aplicar`
     └── docs/copiloto/
         ├── STATE.md            estado vivo (muda a cada turno)
         ├── contexto/           PROJECT.md (hub) e CODEBASE-MAP.md
@@ -165,10 +166,45 @@ Em cada turno seguinte, cole no **final** do pedido o sufixo dinâmico (está no
 `RULES.md`): ele reforça os marcadores de artefato, que são a primeira regra que o modelo
 esquece em threads longas.
 
-Ao receber a resposta, extraia cada artefato copiando o conteúdo **entre**
-`<!-- INICIO: path -->` e `<!-- FIM: path -->` e salvando no `path` indicado pelo próprio
-marcador. Se o destino é `.md` e o conteúdo não começa com `#`, adicione um H1 no topo
-(regra MD041 — detalhe na seção 2.4.1 do manual).
+Ao receber a resposta, você não precisa salvar arquivo por arquivo à mão: o comando
+`aplicar` faz isso (ver a próxima seção). Os artefatos vêm cercados por
+`<!-- INICIO: path -->` e `<!-- FIM: path -->`, e é isso que o script lê.
+
+## Aplicar a resposta: `llm_output.md` + `aplicar`
+
+O fluxo de salvamento é um comando só. Em vez de copiar cada bloco no arquivo certo,
+você joga a resposta inteira da persona num lugar e roda o `aplicar`:
+
+1. Cole a resposta **completa** da persona em `llm_output.md` (na raiz do repo). Se
+   preferir, copie pro clipboard em vez do arquivo — o script usa o `llm_output.md`
+   quando ele tem marcadores, senão cai no clipboard.
+2. Rode o preview (dry-run) e confira o que vai acontecer:
+
+```text
+python -m scripts.copiloto aplicar
+```
+
+3. Se estiver bom, grave:
+
+```text
+python -m scripts.copiloto aplicar --write
+```
+
+O que o `aplicar` faz com cada bloco, pelo nome do alvo:
+
+- **Alvo `.md`** (ex: `docs/copiloto/planos/fase-2-x.md`) — grava o arquivo
+  **exatamente como a persona entregou**, com os próprios marcadores dentro do arquivo.
+  Se o corpo não tem um título `#`, insere um H1 sintético (regra MD041; desligue com
+  `--sem-h1`).
+- **`UPDATE STATE.md` / `UPDATE PROJECT.md`** — não é arquivo inteiro, é um conjunto de
+  updates por seção. O script faz o **merge automático** no `STATE.md` / `PROJECT.md`,
+  pelos verbos `atualizar` / `substituir` / `adicionar` / `remover`. **Sempre confira o
+  diff do dry-run** antes do `--write`: o merge de campos do `Estado` é heurístico.
+- **Alvo de código** (`.py`, `.sql`, `.json`, ...) — é **ignorado e listado**. Código
+  você cria à mão; o script não toca em arquivo que não seja `.md`.
+
+Por padrão é **dry-run** (não grava nada). Só `--write` grava. Depois de gravar a partir
+do `llm_output.md`, o script **zera** esse arquivo pro próximo turno.
 
 ## O comando `pack`: a persona te dá o comando, não a lição de casa
 
@@ -188,16 +224,16 @@ runtime); quando a persona precisa dos dois, ela te dá as duas linhas.
 
 ## Instalar num projeto de trabalho
 
-1. Copie o conteúdo de `templates/` para a raiz do repo de trabalho: vira `docs/copiloto/`, mais `RULES.md` e `manual-copilot-windows.md` à mão para colar/consultar.
+1. Copie o conteúdo de `templates/` para a raiz do repo de trabalho: vira `docs/copiloto/`, o `llm_output.md` (buffer do `aplicar`), mais `RULES.md` e `manual-copilot-windows.md` à mão para colar/consultar.
 2. Copie `scripts/copiloto/` para a raiz do repo de trabalho (precisa ser importável como `scripts.copiloto`).
-3. Garanta que `.temp/` **e** `tests/fixtures/` estão no `.gitignore` do projeto — snapshot, `pack` e fixtures podem conter dados reais. Os valores esperados (`tests/golden/**/expected.json`) são commitados; o dado, não.
+3. Garanta que `.temp/`, `tests/fixtures/` **e** `/llm_output.md` estão no `.gitignore` do projeto — snapshot, `pack`, fixtures e a resposta colada da persona podem conter dados reais. Os valores esperados (`tests/golden/**/expected.json`) são commitados; o dado, não.
 4. Preencha `PROJECT.md` à mão (miolo + Roadmap), ou rode o Bootstrapper (modo "novo projeto"). Não há mais `ROADMAP.md` nem pasta `adr/` — Roadmap e Decisões são seções do `PROJECT.md`.
 5. Rode `python -m scripts.copiloto` e passe o resultado pro Mapper para gerar o `CODEBASE-MAP.md`.
 6. As pastas `tests/golden/fase-N/` (commitada: testes + `expected.json`) e `tests/fixtures/fase-N/` (gitignored: dado real) nascem conforme o Productionize planeja cada fase.
 
 ## Os scripts (`scripts/copiloto/`)
 
-Dois subcomandos:
+Três subcomandos:
 
 Snapshot do código (para o Mapper) — árvore + assinaturas + schemas:
 
@@ -210,6 +246,14 @@ pra colar no chat:
 
 ```bash
 python -m scripts.copiloto pack src/conciliacao/ src/orquestrador.py
+```
+
+Aplicar a resposta da persona — materializa os artefatos `.md` (e faz merge dos blocos
+`UPDATE`) a partir do `llm_output.md` ou do clipboard. Dry-run por padrão; `--write` grava:
+
+```bash
+python -m scripts.copiloto aplicar
+python -m scripts.copiloto aplicar --write
 ```
 
 Porta runtime (dentro do `main.py` do pipeline) — registra DataFrames para popular a seção

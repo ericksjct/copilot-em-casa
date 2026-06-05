@@ -4,3 +4,4 @@ copilot-em-casa.code-workspace
 __pycache__/
 *.pyc
 tests/fixtures/
+/llm_output.md
