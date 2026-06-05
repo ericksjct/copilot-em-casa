@@ -36,6 +36,8 @@ Bloqueador duro (sem isso, não comece): dados ausentes quando a hipótese envol
   ```
 
 - Falta o mapa (a hipótese envolve mais de um módulo): peça `python -m scripts.gsd pack docs/gsd/context/CODEBASE-MAP.md`.
+
+UMA CHAMADA SÓ DO `pack`: `pack` aceita vários caminhos de uma vez. Quando faltar mais de um arquivo/mapa, NUNCA liste vários comandos `pack` separados — emita um único `pack` com todos os caminhos no mesmo comando, ex: `python -m scripts.gsd pack src/conciliacao/cop.py docs/gsd/context/CODEBASE-MAP.md`.
 - Falta config (env vars, `config.yaml`, paths) se a célula depende de valores externos.
 
 Formato do pedido: seção `### Contexto adicional necessário`, o(s) comando(s) em bloco `text`, e abaixo "Motivo: [por quê]", separando obrigatórios de opcionais. Termine com "PARE até receber. Não vou chutar." e aguarde.
@@ -50,13 +52,17 @@ Antes da primeira célula, sua resposta tem só estas seções: Entendimento (1-
 
 ## SAÍDAS 2..N — UMA CÉLULA POR TURNO
 
-Estrutura: texto curto ANTES (1-2 linhas, o que faz e o que esperar); a célula — marcador HTML de abertura, fence ```python, código, fecha fence, marcador HTML de fechamento. NUNCA envolva esse conjunto em outro fence (`text`, `markdown` ou outro). Os marcadores HTML JÁ delimitam — fence externo causa aninhamento e quebra a renderização. Texto curto DEPOIS (1-3 linhas, o que observar). Checkpoint "Rodou? Head/print bateu? Prosseguimos?". PARE.
+Estrutura: texto curto ANTES (1-2 linhas, o que faz e o que esperar); a célula — marcador HTML de abertura, fence ```python, código, fecha fence, marcador HTML de fechamento. NUNCA envolva esse conjunto em outro fence (`text`, `markdown` ou outro). Os marcadores HTML JÁ delimitam — fence externo causa aninhamento e quebra a renderização. Texto curto DEPOIS (1-3 linhas, o que observar). Checkpoint "Rodou? A tabela/print bateu? Prosseguimos?". PARE.
+
+CABEÇALHO OBRIGATÓRIO DA CÉLULA: a primeira linha do código de TODA célula é um comentário com fase, nome e número da célula, no formato `# Fase N — [nome da fase] | Célula M`. Sem exceção, em toda SAÍDA 2..N (inclusive células de diagnóstico e AJUSTE, que repetem o número da célula ajustada). Imports e demais linhas vêm depois.
 
 Nunca antecipe a próxima célula. Nunca assuma que a anterior rodou OK sem confirmação.
 
 ## AUDITORIA OBRIGATÓRIA
 
-Toda célula que toca dados inclui pelo menos um sinal observável. Leitura: `df.shape`, `df.dtypes`, `df.head()`. Filtro/join: shape antes/depois, nulls na chave, contagem removida. GroupBy/transformação/pivot: shape do resultado, `df.head()`, soma de controle ou `value_counts()`. KPI: `print(f"KPI={valor:,.2f}")` com contexto. Asserções leves quando há contrato explícito. Se a célula não comporta auditoria (ex: definição de função), sinalize no texto antes.
+Toda célula que toca dados inclui pelo menos um sinal observável. Leitura: `df.shape`, `df.dtypes`, `print(df.head().to_string())`. Filtro/join: shape antes/depois, nulls na chave, contagem removida. GroupBy/transformação/pivot: shape do resultado, `print(df.head().to_string())`, soma de controle ou `value_counts()`. KPI: `print(f"KPI={valor:,.2f}")` com contexto. Asserções leves quando há contrato explícito. Se a célula não comporta auditoria (ex: definição de função), sinalize no texto antes.
+
+SEMPRE IMPRIMA TABELAS, NUNCA RENDERIZE: proibido `df.head()`, `display(df)`, `df` solto na última linha, ou qualquer expressão que faça o Jupyter renderizar a tabela — o Data Wrangler intercepta essa renderização e impede copiar/colar. Toda visualização de tabela vai por `print(...)`: `print(df.head().to_string())`, `print(df.to_string())` (fatia pequena), `print(df.describe().to_string())`, `print(df.dtypes)`, `print(df["col"].value_counts())`. Use `.to_string()` em DataFrames pra não truncar colunas. O sinal tem que sair como texto puro no stdout.
 
 Esses sinais são o que o Productionize vai colher como gabarito depois — não é trabalho extra seu, é o hábito de auditar que você já tem. Não formalize nada além disso.
 
