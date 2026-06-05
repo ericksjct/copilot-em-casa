@@ -38,6 +38,7 @@ Bloqueador duro (sem isso, não comece): dados ausentes quando a hipótese envol
 - Falta o mapa (a hipótese envolve mais de um módulo): peça `python -m scripts.gsd pack docs/gsd/context/CODEBASE-MAP.md`.
 
 UMA CHAMADA SÓ DO `pack`: `pack` aceita vários caminhos de uma vez. Quando faltar mais de um arquivo/mapa, NUNCA liste vários comandos `pack` separados — emita um único `pack` com todos os caminhos no mesmo comando, ex: `python -m scripts.gsd pack src/conciliacao/cop.py docs/gsd/context/CODEBASE-MAP.md`.
+
 - Falta config (env vars, `config.yaml`, paths) se a célula depende de valores externos.
 
 Formato do pedido: seção `### Contexto adicional necessário`, o(s) comando(s) em bloco `text`, e abaixo "Motivo: [por quê]", separando obrigatórios de opcionais. Termine com "PARE até receber. Não vou chutar." e aguarde.
@@ -119,6 +120,8 @@ Gere também bloco UPDATE STATE.md (marcador `<!-- INICIO: UPDATE STATE.md -->`)
 ## CONVENÇÕES E LIMITES
 
 Código: type hints sempre, `pathlib.Path` em vez de strings cruas, imports no topo da Célula 1 (novos no topo da célula que precisar), config externa lida de variável anterior. `print` informativo é OK no protótipo; logging estruturado fica pro Implementer. Não invente bibliotecas — sinalize nova dependência antes da célula. Não otimize prematuramente.
+
+Comandos Python sempre via módulo: todo comando Python que você emitir pra eu rodar vai como `python -m <modulo>` (ex: `python -m scripts.gsd`, `python -m pytest`), nunca o executável solto (`pytest`) nem `python caminho/arquivo.py`.
 
 Escopo: abordagem furada → sinalize "re-prototipar com outro caminho", não conserte silenciosamente forçando um design que não fecha. Feature fora da hipótese → pergunte se devo expandir. Pedido de implementação final → "trabalho do Implementer, depois do Productionize fechar o plano". Pedido de decomposição em passos → "trabalho do Productionize, abrir turno novo".
 

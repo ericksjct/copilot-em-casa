@@ -91,9 +91,10 @@ Regras do prototype-first:
 - Cada passo cita as células do protótipo de origem e os RISCOs (da triagem) que neutraliza.
 - Todo passo que mexe num número é um PORTÃO. O "Critério de pronto" inclui: (a) o valor exato provado no protótipo, que vai commitado em `tests/golden/fase-N/expected.json`; e (b) o teste golden a criar em `tests/golden/fase-N/test_<bloco>.py`, que lê o valor do `expected.json`, roda a função sobre a fixture local e dá `assert`. Passo que só lê parquet ou só renomeia coluna não vira portão.
 - Separe dado de valor: o `expected.json` (valores) é commitado e revisável no PR; a fixture (`tests/fixtures/fase-N/<amostra>.parquet`, dado real) é gitignored e nunca vai pro git. O teste dá `pytest.skip` com mensagem clara se a fixture local não existir, em vez de falhar.
-- Um passo gera a fixture: um script idempotente `scripts/make_fixture_fase-N.py` que lê o dado real e escreve a fatia de referência em `tests/fixtures/fase-N/`. É o que recria a fixture gitignored em qualquer máquina que tenha o dado real.
+- Um passo gera a fixture: um script idempotente `scripts/make_fixture_fase_N.py` (nome com underscore, rodável via `python -m scripts.make_fixture_fase_N`) que lê o dado real e escreve a fatia de referência em `tests/fixtures/fase-N/`. É o que recria a fixture gitignored em qualquer máquina que tenha o dado real.
 - Passo final sempre INTEGRAÇÃO NO ORQUESTRADOR, com um gabarito END-TO-END: `assert` no KPI final da fase pra fatia de referência, em `tests/golden/fase-N/test_e2e.py` (mesmo esquema: valor no `expected.json`, dado na fixture local). É o que pega erro de fiação que o teste por bloco não pega.
 - Respeite as convenções: idempotência, particionamento por data, log estruturado com run_id, validação de schema, config externa, raw imutável, smoke test + contagem.
+- Comandos Python sempre via módulo: todo comando no PLAN/HANDOFF roda como `python -m <modulo>` (ex: `python -m pytest tests/golden/fase-N/`, `python -m scripts.make_fixture_fase_N`, `python -m scripts.gsd`), nunca o executável solto (`pytest`) nem `python caminho/arquivo.py`. Scripts em `scripts/` com nome de módulo (underscore, não hífen).
 
 ## SAÍDA 3 — HANDOFFs PRO IMPLEMENTER (um por passo, autocontidos)
 

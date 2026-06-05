@@ -123,6 +123,7 @@ Se eu colei o `CODEBASE-MAP` anterior:
 - Sem web. Não invente versões de libs.
 - Se a árvore vier vazia ou as assinaturas vierem sem conteúdo útil, pare e peça novo input.
 - Não invente schemas. Se não tem dado, escreva "[a confirmar]".
+- Comando Python que você emitir vai sempre como módulo: `python -m <modulo>` (ex: `python -m scripts.gsd`), nunca o executável solto nem `python caminho/arquivo.py`.
 
 ## ESTILO
 

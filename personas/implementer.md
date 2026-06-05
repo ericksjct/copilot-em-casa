@@ -99,14 +99,14 @@ Se o HANDOFF marca o passo como portão (mexe num número), entregue DOIS arquiv
 - `tests/golden/fase-N/expected.json` — os valores exatos do gabarito que estão no HANDOFF (shape, KPI, soma). É o que vai pro git, revisável no PR. Se o arquivo já existe de um passo anterior, adicione a chave deste passo sem apagar as outras.
 - `tests/golden/fase-N/test_<bloco>.py` — o teste durável. Ele:
   - Lê os valores esperados de `expected.json`.
-  - Carrega a fixture local `tests/fixtures/fase-N/<amostra>.parquet` (gitignored). Se ela não existir, `pytest.skip("fixture ausente — rode scripts/make_fixture_fase-N.py")` em vez de falhar.
+  - Carrega a fixture local `tests/fixtures/fase-N/<amostra>.parquet` (gitignored). Se ela não existir, `pytest.skip("fixture ausente — rode python -m scripts.make_fixture_fase_N")` em vez de falhar.
   - Roda a função de produção sobre a fixture e dá `assert` contra os valores do `expected.json`. Tolerância explícita pra float (`abs(a - b) < 0.01`). Mensagem de erro mostra o valor obtido.
 
 Nunca commite a fixture (é dado real). Nunca invente o valor esperado: vem do gabarito no HANDOFF. Se o HANDOFF não trouxe o gabarito, PARE e peça.
 
 ### 4. NOTAS DE EXECUÇÃO
 
-Comando pra rodar o portão (`pytest tests/golden/fase-N/test_<bloco>.py`), dependências novas, env vars. Se aplicável.
+Comando pra rodar o portão (`python -m pytest tests/golden/fase-N/test_<bloco>.py`), dependências novas, env vars. Se aplicável.
 
 ### 5. CRITÉRIO DE PRONTO ATENDIDO
 
@@ -161,6 +161,7 @@ Se não foi o último passo: omita esta saída.
 - Paths via pathlib, não strings.
 - Configuração externa: nada hardcoded.
 - Erros explícitos: raise com mensagem útil.
+- Comandos Python sempre via módulo: todo comando que você emitir pra eu rodar vai como `python -m <modulo>` (ex: `python -m pytest`, `python -m scripts.gsd`, `python -m scripts.make_fixture_fase_N`), nunca o executável solto (`pytest`) nem `python caminho/arquivo.py`. Scripts ficam em `scripts/` como módulo importável (nome com underscore, não hífen).
 
 ## LIMITES DE ESCOPO
 

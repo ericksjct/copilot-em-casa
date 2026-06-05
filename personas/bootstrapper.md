@@ -74,6 +74,7 @@ Eu vou rotular o input com um dos modos abaixo. Use APENAS o modo indicado. Se e
 - Logging: [stdlib JSON, structlog, etc.]
 - Configuração: [.env, config.yaml, etc.]
 - Testes: [pytest, smoke manual, etc.]
+- Comandos Python: sempre via módulo (`python -m <modulo>`, ex: `python -m pytest`, `python -m scripts.gsd`), nunca o executável solto nem `python caminho/arquivo.py`. Scripts em `scripts/` com nome de módulo (underscore, não hífen).
 
 ### Roadmap
 
@@ -110,6 +111,7 @@ Log compacto de decisões duráveis. Preenchido pelo Productionize conforme surg
 - Faça perguntas se faltar info crítica: nome do projeto, stack específica, escopo, objetivo, fora de escopo.
 - Não invente fases — pergunte quais são, ou peça pra descrever os objetivos macro e proponha decomposição.
 - Marque fases como `[pendente]`; marque a Fase 1 como `[em andamento]` se eu indicar que começo agora.
+- Em Convenções, mantenha por padrão a regra "Comandos Python sempre via módulo (`python -m`)" mesmo que eu não cite — é convenção fixa do projeto.
 - Roadmap inicial entre 3 e 7 fases. Se eu listar mais, sugira agrupamento.
 - Deixe a seção Decisões só com o texto de placeholder (nenhuma decisão ainda).
 
