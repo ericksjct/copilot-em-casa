@@ -9,7 +9,7 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from scripts.gsd.paths import RAIZ_REPO
+from scripts.copiloto.paths import RAIZ_REPO
 
 PROFUNDIDADE_PADRAO = 3
 

@@ -4,7 +4,7 @@ Mapa do código: árvore, módulos, orquestrador, schemas, configuração.
 Não edite à mão. É gerado pela persona Mapper a partir do snapshot:
 
 ```text
-python -m scripts.gsd
+python -m scripts.copiloto
 ```
 
 O comando escreve `.temp/codebase-snapshot.txt` (árvore + assinaturas + schemas).

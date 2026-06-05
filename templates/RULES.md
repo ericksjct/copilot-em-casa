@@ -38,9 +38,9 @@ Encapsule entre marcadores HTML. O marcador é o delimitador — NÃO use crases
 dele. Use o path de destino como nome do marcador:
 
 ```text
-<!-- INICIO: docs/gsd/plans/fase-N-nome.md -->
+<!-- INICIO: docs/copiloto/planos/fase-N-nome.md -->
 ... conteúdo, incluindo blocos ```python se necessário ...
-<!-- FIM: docs/gsd/plans/fase-N-nome.md -->
+<!-- FIM: docs/copiloto/planos/fase-N-nome.md -->
 ```
 
 ### 6. Espaçamento estrutural

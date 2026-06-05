@@ -9,7 +9,7 @@ from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 
-from scripts.gsd.paths import ARQUIVO_ARCHITECT, ARQUIVO_SNAPSHOT, garantir_temp
+from scripts.copiloto.paths import ARQUIVO_AMOSTRAS, ARQUIVO_SNAPSHOT, garantir_temp
 
 SEPARADOR = "=" * 70
 
@@ -51,9 +51,9 @@ def snapshot_completo(
     """
     # Imports tardios: arvore/assinaturas não tocam pandas/polars,
     # mas schemas sim. Mantém o import do __init__ leve.
-    from scripts.gsd.arvore import gerar_arvore
-    from scripts.gsd.assinaturas import gerar_assinaturas
-    from scripts.gsd.schemas import gerar_secao_schemas
+    from scripts.copiloto.arvore import gerar_arvore
+    from scripts.copiloto.assinaturas import gerar_assinaturas
+    from scripts.copiloto.schemas import gerar_secao_schemas
 
     garantir_temp()
     saida = destino or ARQUIVO_SNAPSHOT
@@ -81,18 +81,18 @@ def snapshot_completo(
 
     saida.write_text("\n".join(linhas), encoding="utf-8")
 
-    print(f"[gsd] snapshot gerado em: {saida}")
+    print(f"[copiloto] snapshot gerado em: {saida}")
     return saida
 
 
-def snapshot_architect(
+def snapshot_amostras(
     *,
     nomes: list[str] | None = None,
     destino: Path | None = None,
 ) -> Path:
     """
-    Gera o snapshot extendido para a persona Architect, em
-    .temp/architect-snapshot.txt.
+    Gera o snapshot extendido com amostras reais dos DataFrames, em
+    .temp/amostras-snapshot.txt.
 
     Diferença para snapshot_completo():
         - Apenas a seção SCHEMAS (sem árvore, sem assinaturas).
@@ -104,7 +104,7 @@ def snapshot_architect(
             todos do registry. Se passar nome inválido, levanta KeyError
             listando os disponíveis.
         destino: path customizado de saída. Padrão:
-            .temp/architect-snapshot.txt na raiz do repo.
+            .temp/amostras-snapshot.txt na raiz do repo.
 
     Returns:
         Path do arquivo gerado.
@@ -114,10 +114,10 @@ def snapshot_architect(
         valores contábeis). Mantenha-o local. Não cole em chat externo.
         Não commite no Git (.temp/ deve estar gitignored).
     """
-    from scripts.gsd.schemas import gerar_secao_schemas_com_amostra
+    from scripts.copiloto.schemas import gerar_secao_schemas_com_amostra
 
     garantir_temp()
-    saida = destino or ARQUIVO_ARCHITECT
+    saida = destino or ARQUIVO_AMOSTRAS
 
     linhas: list[str] = []
     linhas.extend(_cabecalho_global())
@@ -132,6 +132,6 @@ def snapshot_architect(
 
     saida.write_text("\n".join(linhas), encoding="utf-8")
 
-    print(f"[gsd] architect snapshot gerado em: {saida}")
-    print("[gsd] AVISO: arquivo contém amostras reais. Mantenha local.")
+    print(f"[copiloto] snapshot de amostras gerado em: {saida}")
+    print("[copiloto] AVISO: arquivo contém amostras reais. Mantenha local.")
     return saida

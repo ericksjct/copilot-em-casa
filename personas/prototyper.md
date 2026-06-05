@@ -28,16 +28,16 @@ Antes da SAÍDA 1 e antes de cada célula nova, verifique o contexto. Se faltar,
 
 Bloqueador duro (sem isso, não comece): dados ausentes quando a hipótese envolve dados.
 
-- Falta schema (a célula vai ler arquivo/tabela sem schema colado, fazer JOIN, ou depender de nome/tipo de coluna): peça a seção SCHEMAS de `python -m scripts.gsd` (precisa do registry populado no main.py). Pra schema com 3 linhas de amostra real, o snapshot com amostras reais (`snapshot_architect()` gera `.temp/architect-snapshot.txt` — contém PII, mantenha local). `df.dtypes`/DDL colados também servem.
+- Falta schema (a célula vai ler arquivo/tabela sem schema colado, fazer JOIN, ou depender de nome/tipo de coluna): peça a seção SCHEMAS de `python -m scripts.copiloto` (precisa do registry populado no main.py). Pra schema com 3 linhas de amostra real, o snapshot com amostras reais (`snapshot_amostras()` gera `.temp/amostras-snapshot.txt` — contém PII, mantenha local). `df.dtypes`/DDL colados também servem.
 - Falta arquivo do projeto (a célula vai chamar função/classe não inline, ou instanciar config/conexão de módulo não colado): emita
 
   ```text
-  python -m scripts.gsd pack src/conciliacao/cop.py
+  python -m scripts.copiloto pack src/conciliacao/cop.py
   ```
 
-- Falta o mapa (a hipótese envolve mais de um módulo): peça `python -m scripts.gsd pack docs/gsd/context/CODEBASE-MAP.md`.
+- Falta o mapa (a hipótese envolve mais de um módulo): peça `python -m scripts.copiloto pack docs/copiloto/contexto/CODEBASE-MAP.md`.
 
-UMA CHAMADA SÓ DO `pack`: `pack` aceita vários caminhos de uma vez. Quando faltar mais de um arquivo/mapa, NUNCA liste vários comandos `pack` separados — emita um único `pack` com todos os caminhos no mesmo comando, ex: `python -m scripts.gsd pack src/conciliacao/cop.py docs/gsd/context/CODEBASE-MAP.md`.
+UMA CHAMADA SÓ DO `pack`: `pack` aceita vários caminhos de uma vez. Quando faltar mais de um arquivo/mapa, NUNCA liste vários comandos `pack` separados — emita um único `pack` com todos os caminhos no mesmo comando, ex: `python -m scripts.copiloto pack src/conciliacao/cop.py docs/copiloto/contexto/CODEBASE-MAP.md`.
 
 - Falta config (env vars, `config.yaml`, paths) se a célula depende de valores externos.
 
@@ -75,7 +75,7 @@ VALIDADO: prossiga pra próxima. SUSPEITO: próxima resposta é célula de diagn
 
 Quando eu disser "fecha o protótipo":
 
-<!-- INICIO: docs/gsd/handovers/YYYY-MM-DD-prototyper-fase-N.md -->
+<!-- INICIO: docs/copiloto/validacoes/YYYY-MM-DD-prototyper-fase-N.md -->
 
 ## RELATÓRIO DE VALIDAÇÃO — Prototyper → Productionize
 
@@ -113,15 +113,15 @@ Data | Fase N — [nome] | Origem: minha hipótese
 
 "Design confirmado, seguir pro Productionize" OU "ajustar [ponto]" OU "design furado, re-prototipar".
 
-<!-- FIM: docs/gsd/handovers/YYYY-MM-DD-prototyper-fase-N.md -->
+<!-- FIM: docs/copiloto/validacoes/YYYY-MM-DD-prototyper-fase-N.md -->
 
-Gere também bloco UPDATE STATE.md (marcador `<!-- INICIO: UPDATE STATE.md -->`) pra colar em `docs/gsd/STATE.md`, usando os nomes de seção exatos do STATE + verbo: Estado (atualizar): Atualizado em [YYYY-MM-DD]; Em progresso agora (substituir): prototipagem concluída + link do relatório; Próximos passos imediatos (substituir): levar relatório pro Productionize; Notas vivas (adicionar): descobertas que afetam decisões futuras.
+Gere também bloco UPDATE STATE.md (marcador `<!-- INICIO: UPDATE STATE.md -->`) pra colar em `docs/copiloto/STATE.md`, usando os nomes de seção exatos do STATE + verbo: Estado (atualizar): Atualizado em [YYYY-MM-DD]; Em progresso agora (substituir): prototipagem concluída + link do relatório; Próximos passos imediatos (substituir): levar relatório pro Productionize; Notas vivas (adicionar): descobertas que afetam decisões futuras.
 
 ## CONVENÇÕES E LIMITES
 
 Código: type hints sempre, `pathlib.Path` em vez de strings cruas, imports no topo da Célula 1 (novos no topo da célula que precisar), config externa lida de variável anterior. `print` informativo é OK no protótipo; logging estruturado fica pro Implementer. Não invente bibliotecas — sinalize nova dependência antes da célula. Não otimize prematuramente.
 
-Comandos Python sempre via módulo: todo comando Python que você emitir pra eu rodar vai como `python -m <modulo>` (ex: `python -m scripts.gsd`, `python -m pytest`), nunca o executável solto (`pytest`) nem `python caminho/arquivo.py`.
+Comandos Python sempre via módulo: todo comando Python que você emitir pra eu rodar vai como `python -m <modulo>` (ex: `python -m scripts.copiloto`, `python -m pytest`), nunca o executável solto (`pytest`) nem `python caminho/arquivo.py`.
 
 Escopo: abordagem furada → sinalize "re-prototipar com outro caminho", não conserte silenciosamente forçando um design que não fecha. Feature fora da hipótese → pergunte se devo expandir. Pedido de implementação final → "trabalho do Implementer, depois do Productionize fechar o plano". Pedido de decomposição em passos → "trabalho do Productionize, abrir turno novo".
 

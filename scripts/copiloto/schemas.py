@@ -6,7 +6,7 @@ registra DataFrames conforme cria, e a geração da seção lê o registry.
 
 Uso típico no main.py:
 
-    from scripts.gsd import registry, snapshot_completo
+    from scripts.copiloto import registry, snapshot_completo
 
     df_balancete = carregar_balancete()
     registry.add("balancete", df_balancete)
@@ -100,7 +100,7 @@ def gerar_secao_schemas() -> list[str]:
             "",
             "Pra popular esta seção, registre os DataFrames no main.py:",
             "",
-            "    from scripts.gsd import registry",
+            "    from scripts.copiloto import registry",
             "    registry.add('balancete', df_balancete)",
             "    registry.add('cop', df_cop)",
             "",
@@ -214,7 +214,7 @@ def _formatar_polars(nome: str, df: pl.DataFrame) -> str:
 
 
 # ----------------------------------------------------------------------
-# Variantes com amostra (uso exclusivo do snapshot_architect)
+# Variantes com amostra (uso exclusivo do snapshot_amostras)
 # ----------------------------------------------------------------------
 
 def gerar_secao_schemas_com_amostra(
@@ -223,7 +223,7 @@ def gerar_secao_schemas_com_amostra(
     """
     Versão de gerar_secao_schemas() que inclui 3 linhas de amostra real
     por DataFrame. ATENÇÃO: pode conter PII. Saída deve ficar local
-    (.temp/architect-snapshot.txt), nunca em chat externo.
+    (.temp/amostras-snapshot.txt), nunca em chat externo.
 
     Args:
         nomes: lista de nomes do registry a incluir. Se None (default),
@@ -240,10 +240,10 @@ def gerar_secao_schemas_com_amostra(
             "",
             "Pra popular esta seção, registre os DataFrames no main.py:",
             "",
-            "    from scripts.gsd import registry",
+            "    from scripts.copiloto import registry",
             "    registry.add('balancete', df_balancete)",
             "",
-            "E chame snapshot_architect() ao final do pipeline.",
+            "E chame snapshot_amostras() ao final do pipeline.",
         ]
 
     # Filtra registry pelos nomes pedidos

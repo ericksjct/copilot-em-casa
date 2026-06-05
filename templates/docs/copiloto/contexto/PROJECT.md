@@ -37,7 +37,7 @@ Fases em ordem. Status: `[pendente]` | `[em andamento]` | `[concluída]` | `[des
 
 - Objetivo: [1 frase]
 - Pronto quando: [critério verificável]
-- Plano: [`docs/gsd/plans/fase-1-nome.md` quando existir, senão "a planejar"]
+- Plano: [`docs/copiloto/planos/fase-1-nome.md` quando existir, senão "a planejar"]
 
 ### Fase 2: [nome] [pendente]
 

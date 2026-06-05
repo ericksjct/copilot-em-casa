@@ -1,6 +1,6 @@
 # Copilot em Casa
 
-Um sistema para rodar um fluxo estruturado tipo **GSD** (Get Shit Done) dentro do
+Um sistema para rodar um **fluxo estruturado de desenvolvimento** dentro do
 **Copilot do Windows** (GPT-4) — que não escreve em disco, não tem comandos slash, não
 roda agentes e não guarda memória entre threads. Aqui **você é o runtime**: cola o
 contexto, recebe artefatos cercados por marcadores HTML e salva os arquivos à mão.
@@ -19,15 +19,15 @@ você instala o toolkit nele (ver [Instalar num projeto](#instalar-num-projeto-d
 copilot-em-casa/
 ├── README.md                   este guia
 ├── personas/                   as 5 personas do fluxo (uma por papel)
-├── scripts/gsd/                snapshot do código + empacotador de contexto (pack)
+├── scripts/copiloto/           snapshot do código + empacotador de contexto (pack)
 └── templates/                  tudo que você copia pro projeto de trabalho
     ├── RULES.md                regras de formatação/comportamento — colar no início de toda thread
     ├── manual-copilot-windows.md   referência completa: o porquê de cada regra
-    └── docs/gsd/
+    └── docs/copiloto/
         ├── STATE.md            estado vivo (muda a cada turno)
-        ├── context/            PROJECT.md (hub) e CODEBASE-MAP.md
-        ├── plans/              planos por fase
-        └── handovers/          relatório de validação do Prototyper
+        ├── contexto/           PROJECT.md (hub) e CODEBASE-MAP.md
+        ├── planos/             planos por fase
+        └── validacoes/         relatório de validação do Prototyper
 ```
 
 ## Os tipos de contexto
@@ -70,7 +70,7 @@ planejamento sai do protótipo validado (Productionize). Se uma abordagem não f
 [projeto novo]
    └─ Bootstrapper ........... cria PROJECT.md (miolo + Roadmap)
 [código já existe]
-   └─ python -m scripts.gsd → Mapper ... gera CODEBASE-MAP.md
+   └─ python -m scripts.copiloto → Mapper ... gera CODEBASE-MAP.md
 
 [cada fase]
    Prototyper ........ Jupyter: valida a hipótese célula a célula → relatório
@@ -89,30 +89,30 @@ Bootstrapper.
 ## Níveis e responsáveis
 
 ```text
-Projeto  (context/PROJECT.md) — hub durável
+Projeto  (contexto/PROJECT.md) — hub durável
    ├── miolo + Roadmap ............ Bootstrapper
    └── Decisões ................... Productionize  (via UPDATE PROJECT)
 
 Fase N
-   ├── Validação  (handovers/) .... Prototyper
-   ├── Plano  (plans/fase-N-*.md) . Productionize
+   ├── Validação  (validacoes/) .... Prototyper
+   ├── Plano  (planos/fase-N-*.md) . Productionize
    ├── Gabaritos  (tests/) ........ Productionize define, Implementer escreve
    └── Passos → código ............ Implementer
 
 Transversais (não pertencem a uma fase):
-   Mapa  (context/CODEBASE-MAP.md) . Mapper
+   Mapa  (contexto/CODEBASE-MAP.md) . Mapper
    Estado  (STATE.md) ............. você, via blocos UPDATE das personas
 ```
 
 | Nível | Artefato | Path | Responsável |
 | --- | --- | --- | --- |
-| Projeto (hub) | PROJECT.md | `docs/gsd/context/` | Bootstrapper (miolo/Roadmap) + Productionize (Decisões) |
-| Validação | Relatório de prototipagem | `docs/gsd/handovers/` | Prototyper |
-| Plano | PLAN.md | `docs/gsd/plans/` | Productionize |
+| Projeto (hub) | PROJECT.md | `docs/copiloto/contexto/` | Bootstrapper (miolo/Roadmap) + Productionize (Decisões) |
+| Validação | Relatório de prototipagem | `docs/copiloto/validacoes/` | Prototyper |
+| Plano | PLAN.md | `docs/copiloto/planos/` | Productionize |
 | Gabarito | Teste golden + `expected.json` (commitado) + fixture (gitignored) | `tests/golden/`, `tests/fixtures/` | Productionize (define) / Implementer (escreve) |
 | Execução | Código | repo do projeto | Implementer |
-| Mapa | CODEBASE-MAP.md | `docs/gsd/context/` | Mapper |
-| Estado | STATE.md | `docs/gsd/` | você (via blocos UPDATE) |
+| Mapa | CODEBASE-MAP.md | `docs/copiloto/contexto/` | Mapper |
+| Estado | STATE.md | `docs/copiloto/` | você (via blocos UPDATE) |
 
 ## O que blinda a transpilação: gabaritos golden
 
@@ -133,7 +133,7 @@ toca dados (`shape`, `value_counts`, soma de controle, `print(KPI=...)`). Esses 
 - **Implementer**, num passo-portão, entrega o código **+ `expected.json`** (valores) **+ um
   teste golden durável** (`tests/golden/fase-N/test_<bloco>.py`) que lê os valores, roda a
   função sobre a fixture local e dá `assert`. Se a fixture não existir, o teste dá `skip`
-  com instrução pra regenerá-la (`scripts/make_fixture_fase-N.py`).
+  com instrução pra regenerá-la (`scripts/make_fixture_fase_N.py`).
 - O passo de integração ganha um gabarito **end-to-end**: `assert` no KPI final da fase,
   que pega erro de fiação (ordem de chamada, config) que o teste por bloco não pega.
 
@@ -159,7 +159,7 @@ O que entra no item 3, por persona:
 | Productionize | Relatório do Prototyper + o notebook validado + `PROJECT.md` + `CODEBASE-MAP.md` |
 | Implementer | O HANDOFF do passo + a saída do `pack` que o HANDOFF pede |
 | Bootstrapper | Descrição do projeto (modo "novo projeto"), ou `PROJECT.md` atual + o delta |
-| Mapper | `.temp/codebase-snapshot.txt` (de `python -m scripts.gsd`); opcional: CODEBASE-MAP anterior |
+| Mapper | `.temp/codebase-snapshot.txt` (de `python -m scripts.copiloto`); opcional: CODEBASE-MAP anterior |
 
 Em cada turno seguinte, cole no **final** do pedido o sufixo dinâmico (está no fim do
 `RULES.md`): ele reforça os marcadores de artefato, que são a primeira regra que o modelo
@@ -177,46 +177,46 @@ As personas costumam precisar ver um módulo inteiro ou um schema. Em vez de te 
 a saída:
 
 ```text
-python -m scripts.gsd pack src/orquestrador.py src/conciliacao/cop.py
+python -m scripts.copiloto pack src/orquestrador.py src/conciliacao/cop.py
 ```
 
 O `pack` lê cada arquivo (pasta vira os arquivos de texto dentro dela, recursivo), embrulha
 no formato `=== ARQUIVO: path ===` que as personas esperam, escreve em `.temp/pack.txt` e
 ecoa na stdout — você seleciona no terminal e cola. Acentos saem corretos mesmo no console
-do Windows. Schemas continuam vindo de `python -m scripts.gsd` (precisam do registry em
+do Windows. Schemas continuam vindo de `python -m scripts.copiloto` (precisam do registry em
 runtime); quando a persona precisa dos dois, ela te dá as duas linhas.
 
 ## Instalar num projeto de trabalho
 
-1. Copie o conteúdo de `templates/` para a raiz do repo de trabalho: vira `docs/gsd/`, mais `RULES.md` e `manual-copilot-windows.md` à mão para colar/consultar.
-2. Copie `scripts/gsd/` para a raiz do repo de trabalho (precisa ser importável como `scripts.gsd`).
+1. Copie o conteúdo de `templates/` para a raiz do repo de trabalho: vira `docs/copiloto/`, mais `RULES.md` e `manual-copilot-windows.md` à mão para colar/consultar.
+2. Copie `scripts/copiloto/` para a raiz do repo de trabalho (precisa ser importável como `scripts.copiloto`).
 3. Garanta que `.temp/` **e** `tests/fixtures/` estão no `.gitignore` do projeto — snapshot, `pack` e fixtures podem conter dados reais. Os valores esperados (`tests/golden/**/expected.json`) são commitados; o dado, não.
 4. Preencha `PROJECT.md` à mão (miolo + Roadmap), ou rode o Bootstrapper (modo "novo projeto"). Não há mais `ROADMAP.md` nem pasta `adr/` — Roadmap e Decisões são seções do `PROJECT.md`.
-5. Rode `python -m scripts.gsd` e passe o resultado pro Mapper para gerar o `CODEBASE-MAP.md`.
+5. Rode `python -m scripts.copiloto` e passe o resultado pro Mapper para gerar o `CODEBASE-MAP.md`.
 6. As pastas `tests/golden/fase-N/` (commitada: testes + `expected.json`) e `tests/fixtures/fase-N/` (gitignored: dado real) nascem conforme o Productionize planeja cada fase.
 
-## Os scripts (`scripts/gsd/`)
+## Os scripts (`scripts/copiloto/`)
 
 Dois subcomandos:
 
 Snapshot do código (para o Mapper) — árvore + assinaturas + schemas:
 
 ```bash
-python -m scripts.gsd
+python -m scripts.copiloto
 ```
 
 Empacotador de contexto (para qualquer persona que peça arquivos) — embrulha arquivos/pastas
 pra colar no chat:
 
 ```bash
-python -m scripts.gsd pack src/conciliacao/ src/orquestrador.py
+python -m scripts.copiloto pack src/conciliacao/ src/orquestrador.py
 ```
 
 Porta runtime (dentro do `main.py` do pipeline) — registra DataFrames para popular a seção
 de schemas do snapshot:
 
 ```python
-from scripts.gsd import registry, snapshot_completo
+from scripts.copiloto import registry, snapshot_completo
 
 registry.add("balancete", df_balancete)
 registry.add("cop", df_cop)
@@ -227,7 +227,7 @@ snapshot_completo()
 Saída do snapshot: `.temp/codebase-snapshot.txt` (três seções: ÁRVORE, ASSINATURAS, SCHEMAS).
 Saída do pack: `.temp/pack.txt` (+ stdout).
 
-Há ainda `snapshot_architect()`, que gera `.temp/architect-snapshot.txt` com **amostras
+Há ainda `snapshot_amostras()`, que gera `.temp/amostras-snapshot.txt` com **amostras
 reais** dos DataFrames (3 linhas cada), útil pro Prototyper quando precisa ver dado real.
 **Esse arquivo pode conter PII / valores financeiros — mantenha local, não cole em chat
 externo e não comite.**

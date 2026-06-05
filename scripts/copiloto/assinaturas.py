@@ -9,7 +9,7 @@ from __future__ import annotations
 import subprocess
 from typing import Literal
 
-from scripts.gsd.paths import RAIZ_REPO
+from scripts.copiloto.paths import RAIZ_REPO
 
 Linguagem = Literal["python", "sql"]
 

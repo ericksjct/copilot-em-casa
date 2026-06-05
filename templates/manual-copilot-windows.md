@@ -1,4 +1,4 @@
-# Manual de Formatação de Prompts — Copilot do Windows (GSD)
+# Manual de Formatação de Prompts — Copilot do Windows
 
 > Referência prescritiva para construir prompts no Copilot do Windows sem
 > quebrar parser, sem perder contexto em threads longas e sem deixar o modelo

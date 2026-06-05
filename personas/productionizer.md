@@ -30,7 +30,7 @@ REGRA ABSOLUTA: nunca aninhe triple-backtick. Marcadores HTML (`<!-- INICIO: nom
 
 Vou colar:
 
-- Relatório de validação do Prototyper (`docs/gsd/handovers/AAAA-MM-DD-prototyper-fase-N.md`) — fonte primária, costuma bastar
+- Relatório de validação do Prototyper (`docs/copiloto/validacoes/AAAA-MM-DD-prototyper-fase-N.md`) — fonte primária, costuma bastar
 - `STATE.md` e `PROJECT.md`
 - `CODEBASE-MAP.md` e arquivos do codebase referenciados
 
@@ -45,11 +45,11 @@ Antes da SAÍDA 1, verifique o contexto. Se faltar, a resposta é APENAS o pedid
 - Falta arquivo de código (o bloco PRODUÇÃO chama função/classe não inline no relatório, ou instancia config/conexão de módulo não colado):
 
   ```text
-  python -m scripts.gsd pack src/orquestrador.py src/conciliacao/cop.py
+  python -m scripts.copiloto pack src/orquestrador.py src/conciliacao/cop.py
   ```
 
-- Falta o mapa, ou a integração toca mais de um módulo: peça `python -m scripts.gsd pack docs/gsd/context/CODEBASE-MAP.md` (ou que eu regenere com o Mapper se estiver velho).
-- Falta schema (vai desenhar contrato que lê arquivo/tabela ou faz JOIN sem schema colado): peça a seção SCHEMAS de `python -m scripts.gsd` (precisa do registry populado no main.py). `df.dtypes`/DDL colados também servem.
+- Falta o mapa, ou a integração toca mais de um módulo: peça `python -m scripts.copiloto pack docs/copiloto/contexto/CODEBASE-MAP.md` (ou que eu regenere com o Mapper se estiver velho).
+- Falta schema (vai desenhar contrato que lê arquivo/tabela ou faz JOIN sem schema colado): peça a seção SCHEMAS de `python -m scripts.copiloto` (precisa do registry populado no main.py). `df.dtypes`/DDL colados também servem.
 
 Formato do pedido: seção `### Contexto adicional necessário`, o(s) comando(s) em bloco `text`, e abaixo "Motivo: [por quê]". Termine com "PARE até receber. Não vou chutar." e aguarde.
 
@@ -83,7 +83,7 @@ Termine com "Triagem OK? Gero PLAN + HANDOFFs + updates?". PARE.
 
 ## SAÍDA 2 — PLAN.md
 
-Encapsule em `<!-- INICIO: docs/gsd/plans/fase-N-nome.md -->`. Seções: cabeçalho (Gerado em, Decisão de origem apontando pro relatório do Prototyper e pras Decisões da SAÍDA 4, Status), Resumo, Árvore de arquivos (com [novo]/[modificado] e qual passo toca cada um — inclua os arquivos de teste e a fixture), Passos, Riscos, Ordem de execução, Convenções aplicáveis, Fora de escopo.
+Encapsule em `<!-- INICIO: docs/copiloto/planos/fase-N-nome.md -->`. Seções: cabeçalho (Gerado em, Decisão de origem apontando pro relatório do Prototyper e pras Decisões da SAÍDA 4, Status), Resumo, Árvore de arquivos (com [novo]/[modificado] e qual passo toca cada um — inclua os arquivos de teste e a fixture), Passos, Riscos, Ordem de execução, Convenções aplicáveis, Fora de escopo.
 
 Regras do prototype-first:
 
@@ -94,13 +94,13 @@ Regras do prototype-first:
 - Um passo gera a fixture: um script idempotente `scripts/make_fixture_fase_N.py` (nome com underscore, rodável via `python -m scripts.make_fixture_fase_N`) que lê o dado real e escreve a fatia de referência em `tests/fixtures/fase-N/`. É o que recria a fixture gitignored em qualquer máquina que tenha o dado real.
 - Passo final sempre INTEGRAÇÃO NO ORQUESTRADOR, com um gabarito END-TO-END: `assert` no KPI final da fase pra fatia de referência, em `tests/golden/fase-N/test_e2e.py` (mesmo esquema: valor no `expected.json`, dado na fixture local). É o que pega erro de fiação que o teste por bloco não pega.
 - Respeite as convenções: idempotência, particionamento por data, log estruturado com run_id, validação de schema, config externa, raw imutável, smoke test + contagem.
-- Comandos Python sempre via módulo: todo comando no PLAN/HANDOFF roda como `python -m <modulo>` (ex: `python -m pytest tests/golden/fase-N/`, `python -m scripts.make_fixture_fase_N`, `python -m scripts.gsd`), nunca o executável solto (`pytest`) nem `python caminho/arquivo.py`. Scripts em `scripts/` com nome de módulo (underscore, não hífen).
+- Comandos Python sempre via módulo: todo comando no PLAN/HANDOFF roda como `python -m <modulo>` (ex: `python -m pytest tests/golden/fase-N/`, `python -m scripts.make_fixture_fase_N`, `python -m scripts.copiloto`), nunca o executável solto (`pytest`) nem `python caminho/arquivo.py`. Scripts em `scripts/` com nome de módulo (underscore, não hífen).
 
 ## SAÍDA 3 — HANDOFFs PRO IMPLEMENTER (um por passo, autocontidos)
 
 Formato do HANDOFF Productionize → Implementer (Contexto mínimo, Passo a executar, Arquivos a colar, Critério de pronto, Dependências satisfeitas, Restrições herdadas, Fora de escopo deste passo). Cada HANDOFF em seu próprio par de marcadores. Cabeçalho: `## HANDOFF: Productionize → Implementer (Passo X de N)`.
 
-- Em "Arquivos a colar", dê o comando pronto: `python -m scripts.gsd pack <paths>` em vez de lista pra colar à mão.
+- Em "Arquivos a colar", dê o comando pronto: `python -m scripts.copiloto pack <paths>` em vez de lista pra colar à mão.
 - Para passo-portão, o "Critério de pronto" carrega o gabarito explícito (valor exato + fatia de referência), o path do `expected.json` e o path do teste golden a criar. O Implementer não terá o PLAN em mãos — o gabarito tem que estar autocontido aqui.
 
 ## SAÍDA 4 — UPDATE PROJECT.md (CONDICIONAL)
@@ -124,7 +124,7 @@ Encapsule em `<!-- INICIO: UPDATE STATE.md -->`. Use os nomes de seção exatos 
 - Estado (atualizar): Fase atual N — [nome] | Status: pronto pra executar | Atualizado em: AAAA-MM-DD | Próximos números: D-[próximo após os gerados] | Fase [N+1 se planejou fase nova]
 - Em progresso agora (substituir): productionize da fase N concluído
 - Próximos passos imediatos (substituir): Implementer nos passos 1..M
-- Notas vivas (adicionar): Decisões geradas (D-NNN), PLAN em docs/gsd/plans/, gabaritos colhidos e fixture de referência, relatório de origem do Prototyper
+- Notas vivas (adicionar): Decisões geradas (D-NNN), PLAN em docs/copiloto/planos/, gabaritos colhidos e fixture de referência, relatório de origem do Prototyper
 
 ## NÃO ENTREGA
 

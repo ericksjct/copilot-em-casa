@@ -56,12 +56,12 @@ Para outras linguagens, use ```sql, ```bash, ```yaml etc. dentro dos marcadores.
 Vou colar:
 
 - HANDOFF: Productionize → Implementer (Passo N)
-- Arquivos necessários (rodo o comando `python -m scripts.gsd pack <paths>` que o HANDOFF indica e colo a saída)
+- Arquivos necessários (rodo o comando `python -m scripts.copiloto pack <paths>` que o HANDOFF indica e colo a saída)
 
 Se faltar, pare e peça. Não codifique adivinhando. Quando precisar de um arquivo que não colei, emita o comando pra eu rodar:
 
 ```text
-python -m scripts.gsd pack src/conciliacao/base.py
+python -m scripts.copiloto pack src/conciliacao/base.py
 ```
 
 ## INPUT DE "ERRO DE EXECUÇÃO"
@@ -145,7 +145,7 @@ Se este passo concluiu a fase (era a integração e o critério da fase no Roadm
 
 Roadmap (atualizar):
 
-- Fase N: [nome] [concluída] — Plano: docs/gsd/plans/fase-N-nome.md
+- Fase N: [nome] [concluída] — Plano: docs/copiloto/planos/fase-N-nome.md
 - Fase [N+1], se existir e estava [pendente]: marque [em andamento]
 
 <!-- FIM: UPDATE PROJECT.md -->
@@ -161,7 +161,7 @@ Se não foi o último passo: omita esta saída.
 - Paths via pathlib, não strings.
 - Configuração externa: nada hardcoded.
 - Erros explícitos: raise com mensagem útil.
-- Comandos Python sempre via módulo: todo comando que você emitir pra eu rodar vai como `python -m <modulo>` (ex: `python -m pytest`, `python -m scripts.gsd`, `python -m scripts.make_fixture_fase_N`), nunca o executável solto (`pytest`) nem `python caminho/arquivo.py`. Scripts ficam em `scripts/` como módulo importável (nome com underscore, não hífen).
+- Comandos Python sempre via módulo: todo comando que você emitir pra eu rodar vai como `python -m <modulo>` (ex: `python -m pytest`, `python -m scripts.copiloto`, `python -m scripts.make_fixture_fase_N`), nunca o executável solto (`pytest`) nem `python caminho/arquivo.py`. Scripts ficam em `scripts/` como módulo importável (nome com underscore, não hífen).
 
 ## LIMITES DE ESCOPO
 

@@ -49,7 +49,7 @@ Eu vou rotular o input com um dos modos abaixo. Use APENAS o modo indicado. Se e
 
 ## TEMPLATE: PROJECT.md
 
-<!-- INICIO: docs/gsd/context/PROJECT.md -->
+<!-- INICIO: docs/copiloto/contexto/PROJECT.md -->
 
 ## PROJECT: [nome]
 
@@ -74,7 +74,7 @@ Eu vou rotular o input com um dos modos abaixo. Use APENAS o modo indicado. Se e
 - Logging: [stdlib JSON, structlog, etc.]
 - Configuração: [.env, config.yaml, etc.]
 - Testes: [pytest, smoke manual, etc.]
-- Comandos Python: sempre via módulo (`python -m <modulo>`, ex: `python -m pytest`, `python -m scripts.gsd`), nunca o executável solto nem `python caminho/arquivo.py`. Scripts em `scripts/` com nome de módulo (underscore, não hífen).
+- Comandos Python: sempre via módulo (`python -m <modulo>`, ex: `python -m pytest`, `python -m scripts.copiloto`), nunca o executável solto nem `python caminho/arquivo.py`. Scripts em `scripts/` com nome de módulo (underscore, não hífen).
 
 ### Roadmap
 
@@ -102,7 +102,7 @@ Log compacto de decisões duráveis. Preenchido pelo Productionize conforme surg
 
 - [o que esse projeto NÃO faz]
 
-<!-- FIM: docs/gsd/context/PROJECT.md -->
+<!-- FIM: docs/copiloto/contexto/PROJECT.md -->
 
 ## REGRAS POR MODO
 

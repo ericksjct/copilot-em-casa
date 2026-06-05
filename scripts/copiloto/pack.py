@@ -1,5 +1,5 @@
 """
-Empacotador de arquivos sob demanda: python -m scripts.gsd pack <path> ...
+Empacotador de arquivos sob demanda: python -m scripts.copiloto pack <path> ...
 
 Lê arquivos (ou todos os arquivos de texto de uma pasta, recursivo), embrulha
 cada um no separador `=== ARQUIVO: path ===` e escreve em .temp/pack.txt,
@@ -7,13 +7,13 @@ ecoando na stdout pra você colar direto do terminal no chat.
 
 É a contrapartida do modelo "você é o runtime": em vez da persona pedir
 "cole main.py, cole conciliacao.py", ela emite o comando e você cola a saída.
-    python -m scripts.gsd pack src/orquestrador.py src/conciliacao/
+    python -m scripts.copiloto pack src/orquestrador.py src/conciliacao/
 """
 from __future__ import annotations
 
 from pathlib import Path
 
-from scripts.gsd.paths import DIR_TEMP, RAIZ_REPO, garantir_temp
+from scripts.copiloto.paths import DIR_TEMP, RAIZ_REPO, garantir_temp
 
 ARQUIVO_PACK: Path = DIR_TEMP / "pack.txt"
 

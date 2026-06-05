@@ -1,4 +1,4 @@
-"""Constantes de path compartilhadas pelo pacote scripts.gsd."""
+"""Constantes de path compartilhadas pelo pacote scripts.copiloto."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -19,7 +19,7 @@ def _achar_raiz_repo() -> Path:
 RAIZ_REPO: Path = _achar_raiz_repo()
 DIR_TEMP: Path = RAIZ_REPO / ".temp"
 ARQUIVO_SNAPSHOT: Path = DIR_TEMP / "codebase-snapshot.txt"
-ARQUIVO_ARCHITECT: Path = DIR_TEMP / "architect-snapshot.txt"
+ARQUIVO_AMOSTRAS: Path = DIR_TEMP / "amostras-snapshot.txt"
 
 
 def garantir_temp() -> Path:
