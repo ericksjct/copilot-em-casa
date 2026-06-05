@@ -18,7 +18,8 @@ você instala o toolkit nele (ver [Instalar num projeto](#instalar-num-projeto-d
 ```text
 copilot-em-casa/
 ├── README.md                   este guia
-├── personas/                   as 5 personas do fluxo (uma por papel)
+├── personas/                   as 5 personas do fluxo (RULES.md embutido — self-contained)
+├── personas_legado/            as mesmas 5 personas sem RULES embutido (espera o RULES colado à parte)
 ├── scripts/copiloto/           snapshot, pack e aplicar (materializa a resposta da persona)
 └── templates/                  tudo que você copia pro projeto de trabalho
     ├── RULES.md                regras de formatação/comportamento — colar no início de toda thread
@@ -48,8 +49,11 @@ ou integrar).
 
 ## As personas
 
-Cada persona é um papel com escopo travado. Cole o arquivo da persona no início da thread,
-junto com `RULES.md` e o `STATE.md` do projeto.
+Cada persona é um papel com escopo travado. As de `personas/` já trazem o `RULES.md`
+**embutido** (a seção FORMATAÇÃO no topo + o sufixo dinâmico no fim) — são self-contained:
+cole a persona + o `STATE.md` e pronto, sem `RULES.md` à parte. Se preferir manter as
+regras separadas (persona mais enxuta, RULES colado uma vez), use a mesma persona em
+`personas_legado/` + `RULES.md`. Mesmo conteúdo de papel; muda só o empacotamento das regras.
 
 | Persona | Use quando | Produz |
 | --- | --- | --- |
@@ -147,14 +151,14 @@ sinais novos e re-emite os testes — você não caça valor à mão em dez arqu
 
 No primeiro turno de uma thread, cole nesta ordem:
 
-1. `RULES.md` (as regras fixas)
-2. A persona do papel atual (ex: `personas/productionizer.md`)
-3. O `STATE.md` do projeto + o que a persona pede (ver quadro abaixo)
-4. Seu pedido
+1. A persona do papel atual (ex: `personas/productionizer.md`) — já traz o `RULES.md`
+   embutido. (Se usar a variante de `personas_legado/`, cole o `RULES.md` antes dela.)
+2. O `STATE.md` do projeto + o que a persona pede (ver quadro abaixo)
+3. Seu pedido
 
-O que entra no item 3, por persona:
+O que entra no item 2, por persona:
 
-| Persona | Cole junto (além de RULES + STATE) |
+| Persona | Cole junto (além do STATE) |
 | --- | --- |
 | Prototyper | Sua hipótese/pergunta + caminho ou amostra dos dados reais |
 | Productionize | Relatório do Prototyper + o notebook validado + `PROJECT.md` + `CODEBASE-MAP.md` |
@@ -162,9 +166,9 @@ O que entra no item 3, por persona:
 | Bootstrapper | Descrição do projeto (modo "novo projeto"), ou `PROJECT.md` atual + o delta |
 | Mapper | `.temp/codebase-snapshot.txt` (de `python -m scripts.copiloto`); opcional: CODEBASE-MAP anterior |
 
-Em cada turno seguinte, cole no **final** do pedido o sufixo dinâmico (está no fim do
-`RULES.md`): ele reforça os marcadores de artefato, que são a primeira regra que o modelo
-esquece em threads longas.
+Em cada turno seguinte, cole no **final** do pedido o sufixo dinâmico (está no fim de cada
+persona e do `RULES.md`): ele reforça os marcadores de artefato, que são a primeira regra
+que o modelo esquece em threads longas.
 
 Ao receber a resposta, você não precisa salvar arquivo por arquivo à mão: o comando
 `aplicar` faz isso (ver a próxima seção). Os artefatos vêm cercados por
