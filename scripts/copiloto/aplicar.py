@@ -16,7 +16,12 @@ O que o script faz com cada bloco, pelo nome do alvo:
   - alvo `UPDATE STATE.md` / `UPDATE PROJECT.md`  -> NÃO é arquivo inteiro: é um
     bloco de updates por seção. O script faz merge automático no arquivo alvo
     (docs/copiloto/STATE.md e docs/copiloto/contexto/PROJECT.md), seção a seção,
-    pelos verbos atualizar / substituir / adicionar / remover.
+    pelos verbos atualizar / substituir / adicionar / remover. O reconhecimento
+    do alvo é tolerante (o runtime varia o marcador): casa 'UPDATE STATE' sem
+    .md, em qualquer caixa/espaço, com 'UPDATE' traduzido, e o próprio marcador
+    pode vir em inglês (START/BEGIN/END). Um bloco de ARQUIVO inteiro com alvo
+    'docs/copiloto/STATE.md' continua caindo na regra .md (sobrescreve) — é a
+    válvula de reset, de propósito.
 
   - alvo de código/dado (`.py`, `.sql`, `.json`, `.yaml`, ...)  -> IGNORA e
     avisa. Código é criado à mão pelo usuário (fora do escopo do script).
@@ -55,8 +60,11 @@ VERBOS = ("atualizar", "substituir", "adicionar", "remover")
 # Extensões que o script grava (.md) vs. as que ignora (código/dado, à mão).
 EXT_MARKDOWN = frozenset({".md"})
 
-_RE_INICIO = re.compile(r"<!--\s*INICIO:\s*(?P<nome>.+?)\s*-->")
-_RE_FIM = re.compile(r"<!--\s*FIM:\s*(?P<nome>.+?)\s*-->")
+# Tolera o que o runtime varia: INÍCIO com acento, START/BEGIN/END em inglês,
+# qualquer caixa. O pareamento é por NOME (não pelo verbo), então misturar
+# START...FIM funciona. Dry-run continua sendo a rede contra falso-positivo.
+_RE_INICIO = re.compile(r"<!--\s*(?:IN[IÍ]CIO|START|BEGIN)\s*:\s*(?P<nome>.+?)\s*-->", re.IGNORECASE)
+_RE_FIM = re.compile(r"<!--\s*(?:FIM|END)\s*:\s*(?P<nome>.+?)\s*-->", re.IGNORECASE)
 _RE_DIRETIVA = re.compile(
     r"^\s*[-*]?\s*(?P<sec>[^:|()]+?)\s*\((?P<verbo>"
     + "|".join(VERBOS)
@@ -149,15 +157,39 @@ def _extensao(nome: str) -> str:
     return base[ponto:].lower() if ponto > 0 else ""
 
 
+# Primeira palavra que marca um bloco UPDATE (tolera "UPDATE" traduzido).
+_PALAVRAS_UPDATE = frozenset({"update", "atualizar", "atualizacao"})
+
+
+def _classificar_update(nome: str) -> str | None:
+    """
+    Reconhece um marcador de UPDATE tolerando variação real do runtime: sem `.md`,
+    caixa/espaço diferente, pontuação, ou "UPDATE" traduzido. Casa só se a 1ª
+    palavra for de update E houver 'state'/'estado' ou 'project'/'projeto' — assim
+    um bloco de arquivo inteiro 'docs/copiloto/STATE.md' (que deve sobrescrever, é
+    a válvula de reset) NÃO é confundido com um UPDATE.
+
+    Exemplos que casam: 'UPDATE STATE.md', 'UPDATE STATE', 'update  state .md',
+    'Update: Project', 'atualizar estado'. Não casa: 'docs/copiloto/STATE.md'.
+    """
+    palavras = re.findall(r"[a-z]+", _normalizar(nome))
+    if not palavras or palavras[0] not in _PALAVRAS_UPDATE:
+        return None
+    if "state" in palavras or "estado" in palavras:
+        return "update_state"
+    if "project" in palavras or "projeto" in palavras:
+        return "update_project"
+    return None
+
+
 def classificar(nome: str) -> str:
     """
     Retorna o tipo do alvo:
       'update_state' | 'update_project' | 'md' | 'codigo' | 'ignora'
     """
-    if nome == "UPDATE STATE.md":
-        return "update_state"
-    if nome == "UPDATE PROJECT.md":
-        return "update_project"
+    atualizacao = _classificar_update(nome)
+    if atualizacao is not None:
+        return atualizacao
     ext = _extensao(nome)
     if ext in EXT_MARKDOWN:
         return "md"
