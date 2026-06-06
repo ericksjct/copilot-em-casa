@@ -24,6 +24,11 @@ Dois subcomandos:
         os artefatos .md que ela delimitou com <!-- INICIO: ... --> / <!-- FIM:
         ... -->, além de fazer merge dos blocos UPDATE STATE.md / UPDATE
         PROJECT.md. Dry-run por padrão; --write grava.
+
+    python -m scripts.copiloto instalar [DESTINO] [--write]
+        Instala o toolkit num repo de trabalho a partir de um manifesto
+        declarativo (origem->destino), mesclando o .gitignore. Sem o caminho,
+        usa o diretório atual. Dry-run por padrão; --write grava.
 """
 from __future__ import annotations
 
@@ -70,6 +75,23 @@ def _construir_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="mostrar o diff também ao gravar (--write)",
     )
+
+    p_instalar = sub.add_parser(
+        "instalar",
+        help="instala o toolkit num repo de trabalho (manifesto origem->destino)",
+    )
+    p_instalar.add_argument(
+        "destino",
+        nargs="?",
+        default=None,
+        metavar="DESTINO",
+        help="raiz do projeto de trabalho (padrão: diretório atual)",
+    )
+    p_instalar.add_argument(
+        "--write",
+        action="store_true",
+        help="grava de fato (sem isso, é dry-run: só mostra a árvore que faria)",
+    )
     return parser
 
 
@@ -94,6 +116,12 @@ def main(argv: list[str] | None = None) -> int:
             if hasattr(sys.stdout, "reconfigure"):
                 sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
             return main_aplicar(args)
+        elif args.comando == "instalar":
+            from scripts.copiloto.instalar import main_instalar
+
+            if hasattr(sys.stdout, "reconfigure"):
+                sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
+            return main_instalar(args)
         else:
             snapshot_completo()
     except Exception as exc:

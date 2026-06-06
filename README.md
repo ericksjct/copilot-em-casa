@@ -20,7 +20,7 @@ copilot-em-casa/
 ├── README.md                   este guia
 ├── personas/                   as 5 personas do fluxo (RULES.md embutido — self-contained)
 ├── personas_legado/            as mesmas 5 personas sem RULES embutido (espera o RULES colado à parte)
-├── scripts/copiloto/           snapshot, pack e aplicar (materializa a resposta da persona)
+├── scripts/copiloto/           snapshot, pack, aplicar (materializa a resposta da persona) e instalar
 └── templates/                  tudo que você copia pro projeto de trabalho
     ├── RULES.md                regras de formatação/comportamento — colar no início de toda thread
     ├── manual-copilot-windows.md   referência completa: o porquê de cada regra
@@ -228,16 +228,62 @@ runtime); quando a persona precisa dos dois, ela te dá as duas linhas.
 
 ## Instalar num projeto de trabalho
 
-1. Copie o conteúdo de `templates/` para a raiz do repo de trabalho: vira `docs/copiloto/`, o `llm_output.md` (buffer do `aplicar`), mais `RULES.md` e `manual-copilot-windows.md` à mão para colar/consultar.
-2. Copie `scripts/copiloto/` para a raiz do repo de trabalho (precisa ser importável como `scripts.copiloto`).
-3. Garanta que `.temp/`, `tests/fixtures/` **e** `/llm_output.md` estão no `.gitignore` do projeto — snapshot, `pack`, fixtures e a resposta colada da persona podem conter dados reais. Os valores esperados (`tests/golden/**/expected.json`) são commitados; o dado, não.
-4. Preencha `PROJECT.md` à mão (miolo + Roadmap), ou rode o Bootstrapper (modo "novo projeto"). Não há mais `ROADMAP.md` nem pasta `adr/` — Roadmap e Decisões são seções do `PROJECT.md`.
-5. Rode `python -m scripts.copiloto` e passe o resultado pro Mapper para gerar o `CODEBASE-MAP.md`.
-6. As pastas `tests/golden/fase-N/` (commitada: testes + `expected.json`) e `tests/fixtures/fase-N/` (gitignored: dado real) nascem conforme o Productionize planeja cada fase.
+Pré-requisitos: Python instalado, e este toolkit baixado/clonado numa pasta.
+
+1. Abra o terminal **na pasta do toolkit** (`copilot-em-casa`).
+
+2. Rode o preview, apontando pro repo onde você vai trabalhar (caminho com
+   espaço vai entre aspas). Isso **não grava nada** — só mostra a árvore exata:
+
+   ```text
+   python -m scripts.copiloto instalar C:\caminho\do\projeto
+   ```
+
+   Você vê cada arquivo com `+ criar` / `~ atualizar` / `pular`, mais as linhas
+   que entrariam no `.gitignore`, e no fim: `DRY-RUN — nada foi gravado`.
+
+3. Conferiu? Rode de novo com `--write` pra gravar:
+
+   ```text
+   python -m scripts.copiloto instalar C:\caminho\do\projeto --write
+   ```
+
+4. Preencha `docs/copiloto/contexto/PROJECT.md` (miolo + Roadmap), ou rode o
+   Bootstrapper (modo "novo projeto").
+
+5. Gere o mapa do código: `python -m scripts.copiloto` → passe pro Mapper.
+
+> **Atualizar depois é o mesmo comando.** Re-instalar é seguro: o código do tool,
+> o `RULES.md` e o manual são atualizados, mas seu estado vivo (`PROJECT.md`,
+> `STATE.md`, planos) é preservado.
+
+<details>
+<summary>O que o comando faz por dentro</summary>
+
+Lê um manifesto declarativo (`PAYLOAD`, em `scripts/copiloto/instalar.py`) — a
+fonte única da hierarquia origem→destino, o que elimina o risco de pasta no lugar
+errado. Ele materializa `docs/copiloto/`, `RULES.md`, `manual-copilot-windows.md`,
+`llm_output.md` e o pacote `scripts/copiloto/`; mescla o `.gitignore` (anexa só o
+que falta — snapshot, `pack`, fixtures e a resposta colada da persona podem conter
+dado real); e distingue arquivos **semente** (estado vivo, só cria se faltar) de
+**sempre** (código/regras, acompanham a versão do toolkit). Não há `ROADMAP.md` nem
+pasta `adr/` — Roadmap e Decisões são seções do `PROJECT.md`. As pastas
+`tests/golden/` (commitada: testes + `expected.json`) e `tests/fixtures/`
+(gitignored: dado real) nascem depois, quando o Productionize planeja cada fase —
+não na instalação.
+</details>
 
 ## Os scripts (`scripts/copiloto/`)
 
-Três subcomandos:
+Quatro subcomandos:
+
+Instalar o toolkit num repo de trabalho (manifesto origem→destino, mescla `.gitignore`,
+preserva estado vivo) — dry-run por padrão, `--write` grava:
+
+```bash
+python -m scripts.copiloto instalar C:\caminho\do\projeto
+python -m scripts.copiloto instalar C:\caminho\do\projeto --write
+```
 
 Snapshot do código (para o Mapper) — árvore + assinaturas + schemas:
 
