@@ -94,19 +94,19 @@ Bootstrapper.
 ## Níveis e responsáveis
 
 ```text
-Projeto  (contexto/PROJECT.md) — hub durável
-   ├── miolo + Roadmap ............ Bootstrapper
-   └── Decisões ................... Productionize  (via UPDATE PROJECT)
+Projeto (contexto/PROJECT.md)        hub durável
+   ├── miolo + Roadmap ............. Bootstrapper
+   └── Decisões .................... Productionize  (via UPDATE PROJECT)
 
 Fase N
    ├── Validação  (validacoes/) .... Prototyper
    ├── Plano  (planos/fase-N-*.md) . Productionize
-   ├── Gabaritos  (tests/) ........ Productionize define, Implementer escreve
-   └── Passos → código ............ Implementer
+   ├── Gabaritos  (tests/) ......... Productionize define, Implementer escreve
+   └── Passos → código ............. Implementer
 
-Transversais (não pertencem a uma fase):
-   Mapa  (contexto/CODEBASE-MAP.md) . Mapper
-   Estado  (STATE.md) ............. você, via blocos UPDATE das personas
+Transversais                         (não pertencem a uma fase):
+   Mapa  (contexto/CODEBASE-MAP.md). Mapper
+   Estado  (STATE.md) .............. você, via blocos UPDATE das personas
 ```
 
 | Nível | Artefato | Path | Responsável |
